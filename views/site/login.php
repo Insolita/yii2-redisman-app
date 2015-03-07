@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <?= Yii::t(
             'app', 'To modify the username/password, please check out the code'
-        ) ?><code> app\models\User::$users</code>
+        ) ?><code> app\models\User::$users</code><?=Html::a('<i class="icon forward large"></i>','https://github.com/Insolita/yii2-redisman-app/blob/master/models/User.php',['target'=>'_blank'])?>
     </div>
 </div>
 
