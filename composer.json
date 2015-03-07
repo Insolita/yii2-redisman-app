@@ -1,16 +1,12 @@
 {
-    "name": "yiisoft/yii2-app-basic",
-    "description": "Yii 2 Basic Application Template",
-    "keywords": ["yii2", "framework", "basic", "application template"],
-    "homepage": "http://www.yiiframework.com/",
+    "name": "insolita/yii2-redisman-app",
+    "description": "Yii 2 Redis Manager Application",
+    "keywords": ["yii2", "redis", "php-redis", "yii2-redis"],
+    "homepage": "https://yii2redis-insolita1.c9.io/",
     "type": "project",
-    "license": "BSD-3-Clause",
+    "license": "Mit",
     "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
+        "source": "https://github.com/Insolita/yii2-redisman-app"
     },
     "minimum-stability": "dev",
     "require": {
