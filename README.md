@@ -1,7 +1,7 @@
 Yii 2 Redis manager application (Beta)
 ================================
 
-Demo coming soon
+Demo http://yii2redis-insolita1.c9.io/
 
 
 INSTALLATION
