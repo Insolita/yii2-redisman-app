@@ -75,8 +75,17 @@ class ActionLog extends ActiveRecord{
      * @param \insolita\redisman\events\ModifyEvent $event
      */
     public static function log($event){
-        $user=UserLog::findByIp(\Yii::$app->request->getUserIP());
-        $model=new static;
+        $ip=\Yii::$app->request->getUserIP();
+        $user=UserLog::findByIp($ip);
+        if(!$user){
+            $user=new UserLog();
+            $user->ip=$ip;
+            $user->logincount=1;
+            $user->userAgent=\Yii::$app->request->getUserAgent();
+            $user->lastvisit=time();
+            $user->save(false);
+        }
+        $model=new ActionLog();
         $model->user_id=$user->id;
         $model->operation=$event->operation;
         $model->db=$event->db;
