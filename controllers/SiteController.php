@@ -16,7 +16,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'except'=>['login','error'],
+                'except'=>['login','error','index'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -44,6 +44,9 @@ class SiteController extends Controller
         ];
     }
 
+    public function actionIndex(){
+        return Yii::$app->user->isGuest?$this->redirect(['login']):$this->redirect(['/redisman/default/index']);
+    }
 
     public function actionLogin()
     {

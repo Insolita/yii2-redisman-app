@@ -17,15 +17,23 @@ class User extends \yii\base\Object implements \yii\web\IdentityInterface
             'password' => 'adminredis',
             'authKey' => 'test100key',
             'accessToken' => '100-token',
-        ],
-       /* '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],*/
+        ]
     ];
+
+    public static function afterLogin($e){
+        $ip=\Yii::$app->request->getUserIP();
+        $log=UserLog::findByIp($ip);
+        if(!$log){
+            $log=new UserLog();
+            $log->ip=$ip;
+        }else{
+            $log->logincount+=1;
+        }
+        $log->userAgent=\Yii::$app->request->getUserAgent();
+        $log->lastvisit=time();
+        $log->save(false);
+
+    }
 
     /**
      * @inheritdoc

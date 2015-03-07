@@ -33,12 +33,37 @@ $config = [
             'defRedis'=>'local',
             'searchMethod'=>'SCAN',
             'greedySearch'=>false,
+            'on beforeFlushDB'=>function($event){
+                if($event->data['db']==3){
+                     $event->isValid=false;
+                }else{
+                    $event->isValid=true;
+                }
+            },
+            'on beforeAction'=>function($event){
+                \yii\base\Event::on('\insolita\redisman\models\RedisItem',
+                       \insolita\redisman\models\RedisItem::EVENT_AFTER_CHANGE,
+                       function($event){
+                           \app\models\ActionLog::log($event);
+                       }
+                    );
+            }
         ],
 
     ],
     'components' => [
         'redis' => [
-            'class' => 'yii\redis\Connection'
+            'class' => 'yii\redis\Connection',
+            'hostname' => 'localhost',
+            'port' => 6379,
+            'database' => 3,
+        ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@insolita/redisman/views' => '@app/views/redisman',
+                ],
+            ]
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -54,19 +79,23 @@ $config = [
             'class' => 'yii\rbac\PhpManager',
         ],
         'urlManager' => [
-            'class' => '\yii\web\UrlManager',
+            'class' => 'pheme\i18n\I18nUrlManager',
+            'languages' => ['en', 'ru'],
+            'displaySourceLanguage'=>true,
             'showScriptName' => false,
             'enablePrettyUrl' => true,
             'enableStrictParsing' => false,
             'suffix' => '.html',
             'rules' => [
-                ['pattern' => '', 'route' =>'', 'suffix' => ''],
-                ['pattern' => '/', 'route' =>'redisman/default/index', 'suffix' => ''],
-                'login'=>'site/login',
-                'logout'=>'site/logout',
-                'about'=>'site/about',
-                '<action:[\w-]+>' => 'redisman/default/<action>',
-                '<controller:[\w-]+>/<action:[\w-]+>' => 'redisman/<controller>/<action>'
+                '<lang:(ru|en)>'=>'site/index',
+                '<lang:(ru|en)>/index'=>'redisman/default/index',
+                '<lang:(ru|en)>/log'=>'log/index',
+                '<lang:(ru|en)>/user'=>'log/user',
+                '<lang:(ru|en)>/login'=>'site/login',
+                '<lang:(ru|en)>/logout'=>'site/logout',
+                '<lang:(ru|en)>/about'=>'site/about',
+                '<lang:(ru|en)>/<action:[\w-]+>' => 'redisman/default/<action>',
+                '<lang:(ru|en)>/<controller:[\w-]+>/<action:[\w-]+>' => 'redisman/<controller>/<action>'
             ]
         ],
         'user' => [
@@ -74,6 +103,9 @@ $config = [
             'enableAutoLogin' => false,
             'loginUrl' => ['site/login'],
             'returnUrl' => ['/'],
+            'on afterLogin'=>function($event){
+                \app\models\User::afterLogin($event);
+            }
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

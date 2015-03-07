@@ -17,7 +17,8 @@
         "zelenin/yii2-semantic-ui": "*",
 	    "yiisoft/yii2-redis": "*",
 	    "insolita/yii2-redisman": "*",
-	    "lav45/yii2-aceeditor": "*"
+	    "lav45/yii2-aceeditor": "*",
+	    "pheme/yii2-i18n-url": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

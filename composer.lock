@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1f7fd25a01300842ac0385819b5aa18c",
+    "hash": "6305f49642bc5d9dc4bb208a0f04931e",
     "packages": [
         {
             "name": "bower-asset/ace-builds",
@@ -382,7 +382,13 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Insolita/yii2-redisman.git",
-                "reference": "508d24e668c1d59d0b096d6c26d7c66528b293b9"
+                "reference": "6d54d0e963dab329001d10b14b3104d902aa1745"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Insolita/yii2-redisman/zipball/6d54d0e963dab329001d10b14b3104d902aa1745",
+                "reference": "6d54d0e963dab329001d10b14b3104d902aa1745",
+                "shasum": ""
             },
             "require": {
                 "yiisoft/yii2": "*",
@@ -394,6 +400,7 @@
                     "insolita\\redisman\\": ""
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -409,7 +416,7 @@
                 "redis",
                 "yii2"
             ],
-            "time": "2015-03-07 10:39:49"
+            "time": "2015-03-07 14:43:50"
         },
         {
             "name": "lav45/yii2-aceeditor",
@@ -452,6 +459,49 @@
                 "yii2"
             ],
             "time": "2015-01-22 08:01:29"
+        },
+        {
+            "name": "pheme/yii2-i18n-url",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phemellc/yii2-i18n-url.git",
+                "reference": "940173e9c60c89c617339e2957961186f6c386db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phemellc/yii2-i18n-url/zipball/940173e9c60c89c617339e2957961186f6c386db",
+                "reference": "940173e9c60c89c617339e2957961186f6c386db",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*",
+                "yiisoft/yii2-bootstrap": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "pheme\\i18n\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aris Karageorgos",
+                    "email": "aris@phe.me"
+                }
+            ],
+            "description": "Internationalize your urls",
+            "keywords": [
+                " i18n",
+                " manager",
+                " url",
+                "yii2"
+            ],
+            "time": "2014-07-10 03:36:45"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -860,58 +910,6 @@
             }
         },
         {
-            "name": "fzaninotto/faker",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "40426f77f030b6fb45951be920ff1036b2f423d2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/40426f77f030b6fb45951be920ff1036b2f423d2",
-                "reference": "40426f77f030b6fb45951be920ff1036b2f423d2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "~1.5"
-            },
-            "suggest": {
-                "ext-intl": "*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.5.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Faker\\": "src/Faker/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "François Zaninotto"
-                }
-            ],
-            "description": "Faker is a PHP library that generates fake data for you.",
-            "keywords": [
-                "data",
-                "faker",
-                "fixtures"
-            ],
-            "time": "2015-02-27 08:30:07"
-        },
-        {
             "name": "phpspec/php-diff",
             "version": "dev-master",
             "source": {
@@ -1033,53 +1031,6 @@
             "keywords": [
                 "debug",
                 "debugger",
-                "yii2"
-            ],
-            "time": "2015-03-01 06:24:14"
-        },
-        {
-            "name": "yiisoft/yii2-faker",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/yiisoft/yii2-faker.git",
-                "reference": "3e2e40e9b6a62a6dd2d62e0aaa1af24dbb46b83c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-faker/zipball/3e2e40e9b6a62a6dd2d62e0aaa1af24dbb46b83c",
-                "reference": "3e2e40e9b6a62a6dd2d62e0aaa1af24dbb46b83c",
-                "shasum": ""
-            },
-            "require": {
-                "fzaninotto/faker": "*",
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "yii\\faker\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Mark Jebri",
-                    "email": "mark.github@yandex.ru"
-                }
-            ],
-            "description": "Fixture generator. The Faker integration for the Yii framework.",
-            "keywords": [
-                "Fixture",
-                "faker",
                 "yii2"
             ],
             "time": "2015-03-01 06:24:14"
