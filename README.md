@@ -1,7 +1,7 @@
 Yii 2 Redis manager application (Beta)
 ================================
 
- * Demo http://yii2redis-insolita1.c9.io/
+ * Demo http://yii2redis-insolita1.c9.io/  (admin adminredis)
  * Based on redisman-module https://github.com/Insolita/yii2-redisman
 Interface for work with different redis-connections, swtih between databases, search keys by patterns, move\edit\update\delete
 You can use yii2-redis connection, or custom module component that work via php-redis extension
