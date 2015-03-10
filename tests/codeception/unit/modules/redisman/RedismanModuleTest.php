@@ -31,9 +31,8 @@ class RedismanModuleTest extends TestCase
     {
         $this->tester->wantTo('Test creating redis connection with different config');
        $conn=\Yii::createObject([
-               'class' => 'yii\redis\Connection',
-               'hostname' => '82.146.35.148',
-               'password'=>'sollypolly123wpw03RLQwa_Qwa',
+               'class' => 'insolita\redisman\components\PhpredisConnection',
+               'hostname' => 'localhost',
                'port' => 6379,
                'database' => 0,
            ]);

@@ -21,10 +21,14 @@ class RedisItemTest extends \Codeception\TestCase\Test
     protected function setUp()
     {
         parent::setUp();
-        $this->module = \Yii::$app->getModule('redisman');
-        $this->module->setConnection('local', 1);
+
         $fixter = new RedisFixts();
         $fixter->createFixtures();
+
+        $this->module = \Yii::$app->getModule('redisman');
+        $this->module->setConnection('local', 1);
+        $this->assertEquals('local',$this->module->getCurrentConn());
+        $this->assertNotInstanceOf('insolita\redisman\components\PhpredisConnection', $this->module->getConnection());
     }
 
     protected function tearDown()
@@ -221,26 +225,26 @@ class RedisItemTest extends \Codeception\TestCase\Test
     public function testCreateScenario()
     {
         $model = new RedisItem();
-        $model->scenario = 'persist';
-        $model->setAttributes(['key' => 'tfx_string', 'ttl' => 100]);
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100]);
         $this->assertTrue($model->validate());
 
-        $model->setAttributes(['key' => 'tfx_string', 'ttl' => 100500100500]);
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100500100500]);
         $this->assertTrue($model->validate());
 
-        $model->setAttributes(['key' => 'tfx_string', 'ttl' => 100500100500100500]);
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100500100500100500]);
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('ttl'));
 
-        $model->setAttributes(['key' => 'tfx_string', 'ttl' => -9]);
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => -9]);
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('ttl'));
 
-        $model->setAttributes(['key' => 'T^R$%&^R^VTYFFt', 'ttl' => 1]);
+        $model->setAttributes(['key' => 'tfx_string', 'ttl' => 1]);
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('key'));
 
-        $model->setAttributes(['key' => 'tfx_string', 'ttl' => null]);
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => null]);
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('ttl'));
 

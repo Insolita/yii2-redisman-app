@@ -19,13 +19,10 @@ class RedisFixts extends Component
      **/
     private $module;
 
-    public function init()
-    {
-        $this->module = \Yii::$app->getModule('redisman');
-        $this->module->setConnection('localnat',1);
-    }
 
     public function createFixtures(){
+        $this->module = \Yii::$app->getModule('redisman');
+        $this->module->setConnection('localnat',1);
         $this->deleteFixtures();
         /** string **/
         $this->module->executeCommand('SET',['tfx_string','somestringval']);
@@ -157,6 +154,8 @@ class RedisFixts extends Component
     }
 
     public function deleteFixtures(){
+        $this->module = \Yii::$app->getModule('redisman');
+        $this->module->setConnection('localnat',1);
         $this->module->executeCommand('FLUSHDB');
     }
 } 
