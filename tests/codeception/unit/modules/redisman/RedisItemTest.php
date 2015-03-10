@@ -27,8 +27,7 @@ class RedisItemTest extends \Codeception\TestCase\Test
 
         $this->module = \Yii::$app->getModule('redisman');
         $this->module->setConnection('local', 1);
-        $this->assertEquals('local',$this->module->getCurrentConn());
-        $this->assertNotInstanceOf('insolita\redisman\components\PhpredisConnection', $this->module->getConnection());
+
     }
 
     protected function tearDown()
@@ -41,18 +40,22 @@ class RedisItemTest extends \Codeception\TestCase\Test
 
     public function testGetValue()
     {
+        $this->assertEquals('local',$this->module->getCurrentConn());
+        $this->assertNotInstanceOf('insolita\redisman\components\PhpredisConnection', $this->module->getConnection());
         $model = new RedisItem();
         $model->setAttributes(['key' => 'tfx_string', 'type' => 'string']);
         $this->assertTrue($model->validate());
         $val = $model->getValue();
         $this->assertEquals('somestringval', $val);
 
+        $model = new RedisItem();
         $model->setAttributes(['key' => 'tfx_list', 'type' => 'list']);
         $this->assertTrue($model->validate());
         $val = $model->getValue();
         $this->assertTrue(is_array($val));
         $this->assertEquals(['someval1', 'someval2', 'someval3'], $val);
 
+        $model = new RedisItem();
         $model->setAttributes(['key' => 'tfx_set', 'type' => 'set']);
         $this->assertTrue($model->validate());
         $val = $model->getValue();
@@ -62,41 +65,30 @@ class RedisItemTest extends \Codeception\TestCase\Test
         $this->assertTrue(in_array('someval2', $val));
         $this->assertTrue(in_array('someval3', $val));
 
-        $model->setAttributes(['key' => 'testfxt:3:hash', 'type' => 'hash']);
-        $this->assertTrue($model->validate());
-        $val = $model->getValue();
-        $this->assertTrue(is_array($val));
-        $this->assertEquals(['hashfield1', 'hashval1', 'hashfield2', 'hashval2',], $val);
 
-        $model->setAttributes(['key' => 'tfx_zset', 'type' => 'zset']);
-        $this->assertTrue($model->validate());
-        $val = $model->getValue();
-        $this->assertTrue(is_array($val));
-        $this->assertEquals(['someval2', 3, 'someval1', 4, 'someval3', 8], $val);
-    }
-
-    public function testArrayAssociative()
-    {
         $model = new RedisItem();
-        $model->setAttributes(['key' => 'testfxt:3:hash', 'type' => 'hash']);
+        $model->setAttributes(['key' => 'testfxt:3:hash']);
         $this->assertTrue($model->validate());
         $val = $model->getValue();
+        Debug::debug($model->getAttributes());
+        Debug::debug($val);
+        Debug::debug($model->findValue()->getAttributes());
+        Debug::debug($this->module->executeCommand('HGETALL', ['testfxt:3:hash']));
         $this->assertTrue(is_array($val));
-        $this->assertEquals(['hashfield1', 'hashval1', 'hashfield2', 'hashval2',], $val);
-        $func = $this->getProtected('arrayAssociative');
-        $hash = $func->invoke($model, $val);
-        $this->assertEquals(['hashfield1' => 'hashval1', 'hashfield2' => 'hashval2',], $hash);
+        $this->assertEquals($this->module->executeCommand('HGETALL', ['testfxt:3:hash']), $val);
 
+        $model = new RedisItem();
         $model->setAttributes(['key' => 'tfx_zset', 'type' => 'zset']);
         $this->assertTrue($model->validate());
         $val = $model->getValue();
         $this->assertTrue(is_array($val));
         $this->assertEquals(['someval2', 3, 'someval1', 4, 'someval3', 8], $val);
-
-        $hash = $func->invoke($model, $val);
-        $this->assertEquals(['someval2' => 3, 'someval1' => 4, 'someval3' => 8], $hash);
     }
 
+
+    /**
+     * @depends testGetValue
+     **/
     public function testValueDataProvider()
     {
         $model = new RedisItem();
@@ -116,7 +108,9 @@ class RedisItemTest extends \Codeception\TestCase\Test
         $this->assertTrue($dp->getTotalCount()==3);
 
     }
-
+    /**
+     * @depends testGetValue
+     **/
     public function testFind()
     {
         $res = RedisItem::find('tfx_string');
@@ -226,32 +220,94 @@ class RedisItemTest extends \Codeception\TestCase\Test
     {
         $model = new RedisItem();
         $model->scenario = 'create';
-        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100]);
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100, 'type'=>'string','formatvalue'=>'ffhirifrihfirhfihri']);
         $this->assertTrue($model->validate());
 
-        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100500100500]);
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100,'formatvalue'=>'ffhirifrihfirhfihri']);
+        $this->assertFalse($model->validate());
+        $this->assertTrue($model->hasErrors('type'));
+
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'set','formatvalue'=>"hhr \r\n jgjrj \r\n", 'ttl' => 100500100500]);
         $this->assertTrue($model->validate());
 
-        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100500100500100500]);
+
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string555', 'ttl' => 100, 'type'=>'string','formatvalue'=>['ffhirifrih','firhfihri']]);
+         $this->assertFalse($model->validate());
+        Debug::debug($model->getErrors());
+        $this->assertTrue($model->hasErrors('formatvalue'));
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'list','formatvalue'=>['ffhirifrihfirhfihri','frfrfrfrjjr','frfrfrfrjjr']]);
+        $this->assertFalse($model->validate());
+        $this->assertTrue($model->hasErrors('formatvalue'));
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'string','formatvalue'=>['ffhirifrihfirhfihri','frfrfrfrjjr','frfrfrfrjjr']]);
+        $this->assertFalse($model->validate());
+        $this->assertTrue($model->hasErrors('formatvalue'));
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'hash','formatvalue'=>['ffhirifrihfirhfihri','frfrfrfrjjr','frfrfrfrjjr'], 'ttl' => 100500100500]);
+        $this->assertFalse($model->validate());
+        $this->assertTrue($model->hasErrors('formatvalue'));
+
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'hash','formatvalue'=>[['field'=>'frfrf','value'=>'frfr'],['field'=>'44r','value'=>'frfr4rr']]]);
+        $this->assertTrue($model->validate());
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'zset','formatvalue'=>[['field'=>'frfrf','score'=>'434'],['field'=>'44r','score'=>'33']]]);
+        $this->assertTrue($model->validate());
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'hash','formatvalue'=>[['field'=>'frfrf','score'=>'frfr'],['field'=>'44r','value'=>'frfr4rr']]]);
+        $this->assertFalse($model->validate());
+        $this->assertTrue($model->hasErrors('formatvalue'));
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'type'=>'zset','formatvalue'=>[['field'=>'frfrf','score'=>'frfr'],['field'=>'44r','value'=>'frfr4rr']]]);
+        $this->assertFalse($model->validate());
+        $this->assertTrue($model->hasErrors('formatvalue'));
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => 100500100500100500, 'type'=>'list','formatvalue'=>'uiugi uiuuu']);
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('ttl'));
 
-        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => -9]);
+
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => -9, 'type'=>'list','formatvalue'=>'uiugi uiuuu']);
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('ttl'));
-
-        $model->setAttributes(['key' => 'tfx_string', 'ttl' => 1]);
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string', 'ttl' => 1, 'type'=>'set','formatvalue'=>'uiugi uiuuu']);
         $this->assertFalse($model->validate());
         $this->assertTrue($model->hasErrors('key'));
 
-        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => null]);
-        $this->assertFalse($model->validate());
-        $this->assertTrue($model->hasErrors('ttl'));
+        $model = new RedisItem();
+        $model->scenario = 'create';
+        $model->setAttributes(['key' => 'tfx_string999', 'ttl' => null,  'type'=>'list','formatvalue'=>'uiugi uiuuu']);
+        $this->assertTrue($model->validate());
 
-
-        $model->setAttributes(['key' => null, 'ttl' => 100]);
-        $this->assertFalse($model->validate());
-        $this->assertTrue($model->hasErrors('key'));
     }
 
     public function testDeleteScenario()
@@ -351,6 +407,7 @@ class RedisItemTest extends \Codeception\TestCase\Test
         $model->setAttributes(['key' => 'tfx_hashlong']);
         $this->assertFalse($model->validate());
 
+        $model = new RedisItem();
         $model->setAttributes(['key' => 'tfx_abyrvalg','field'=>'pararam']);
         $this->assertFalse($model->validate());
 
@@ -362,17 +419,16 @@ class RedisItemTest extends \Codeception\TestCase\Test
 
         $model = new RedisItem();
         $model->scenario = 'remfield';
-        $model->setAttributes(['key' => urlencode('tfx_hashlong'),'field'=>urlencode('pararam')]);
+        $model->setAttributes(['key' => urlencode('tfx_hashlong'),'field'=>Html::encode('pararam')]);
         $this->assertTrue($model->validate());
         $model->remfield();
 
-        $this->assertEquals(1, $this->module->executeCommand('HEXISTS', ['tfx_hashlong','hashfield6']));
         $model = new RedisItem();
         $model->scenario = 'remfield';
-        $model->setAttributes(['key' => 'tfx_hashlong','field'=>'hashfield6']);
+        $model->setAttributes(['key' => 'tfx_hashlong','field'=>'hashfield3']);
         $this->assertTrue($model->validate());
         $model->remfield();
-        $this->assertEquals(0, $this->module->executeCommand('HEXISTS', ['tfx_hashlong','hashfield6']));
+        $this->assertEquals(0, $this->module->executeCommand('HEXISTS', ['tfx_hashlong','hashfield3']));
 
         $stress=$this->module->executeCommand('HKEYS', ['stress:hash']);
         Debug::debug($this->module->executeCommand('HGETALL', ['stress:hash']));

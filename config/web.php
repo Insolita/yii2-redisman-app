@@ -23,7 +23,7 @@ $config = [
                     'database' => 0,
                 ],
                 'localnat'=>[
-                    'class' => 'insolita\redisman\components\NativeConnection',
+                    'class' => 'insolita\redisman\components\PhpredisConnection',
                     'hostname' => 'localhost',
                     'port' => 6379,
                     'database' => 0,

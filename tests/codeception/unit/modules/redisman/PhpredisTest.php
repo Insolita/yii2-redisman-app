@@ -35,6 +35,55 @@ class PhpredisTest extends \Codeception\TestCase\Test
 
     }
 
+    public function testAddGet(){
+        $this->module->executeCommand('HSET',['tfx_hash111','hashfield','hashval']);
+        $this->module->executeCommand('HMSET',['testfxt:1:hash111',
+                'hashfierththld1','hasgkbjrfkjkhval1',
+                '4543','hashvatgrl2',
+            ]);
+
+        Debug::debug($this->module->executeCommand('HGETALL',['tfx_hash111']));
+        Debug::debug($this->module->executeCommand('HGETALL',['testfxt:1:hash111']));
+    }
+
+    public function testGetValue()
+    {
+        $this->assertEquals('localnat',$this->module->getCurrentConn());
+        $this->assertInstanceOf('insolita\redisman\components\PhpredisConnection', $this->module->getConnection());
+        $model = new RedisItem();
+        $model->setAttributes(['key' => 'tfx_string', 'type' => 'string']);
+        $this->assertTrue($model->validate());
+        $val = $model->getValue();
+        $this->assertEquals('somestringval', $val);
+
+        $model->setAttributes(['key' => 'tfx_list', 'type' => 'list']);
+        $this->assertTrue($model->validate());
+        $val = $model->getValue();
+        $this->assertTrue(is_array($val));
+        $this->assertEquals(['someval1', 'someval2', 'someval3'], $val);
+
+        $model->setAttributes(['key' => 'tfx_set', 'type' => 'set']);
+        $this->assertTrue($model->validate());
+        $val = $model->getValue();
+        $this->assertTrue(is_array($val));
+        $this->assertTrue(in_array('someval4', $val));
+        $this->assertTrue(in_array('someval1', $val));
+        $this->assertTrue(in_array('someval2', $val));
+        $this->assertTrue(in_array('someval3', $val));
+
+        $model->setAttributes(['key' => 'testfxt:3:hash', 'type' => 'hash']);
+        $this->assertTrue($model->validate());
+        $val = $model->getValue();
+        $this->assertTrue(is_array($val));
+        $this->assertEquals(['hashfield1'=> 'hashval1', 'hashfield2'=>'hashval2',], $val);
+
+        $model->setAttributes(['key' => 'tfx_zset', 'type' => 'zset']);
+        $this->assertTrue($model->validate());
+        $val = $model->getValue();
+        $this->assertTrue(is_array($val));
+        $this->assertEquals(['someval2'=> 3, 'someval1'=>4, 'someval3'=>8], $val);
+    }
+
     public function testFind()
     {
          $this->assertEquals('localnat',$this->module->getCurrentConn());

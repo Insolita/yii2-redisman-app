@@ -8,7 +8,7 @@ use tests\codeception\unit\UnitTester;
 use yii\redis\Connection;
 use Codeception\Util\Debug;
 
-class RedismanModuleTest extends TestCase
+class RedismanTest extends TestCase
 {
     /**
      * @var UnitTester
