@@ -4,6 +4,7 @@ namespace tests\codeception\unit\modules\redisman;
 
 use Codeception\Util\Debug;
 use insolita\redisman\models\RedisItem;
+use tests\codeception\unit\fixtures\RedisFixts;
 
 class PhpredisTest extends \Codeception\TestCase\Test
 {
@@ -20,18 +21,24 @@ class PhpredisTest extends \Codeception\TestCase\Test
     protected function setUp()
     {
         parent::setUp();
+
+        $fixter = new RedisFixts();
+        $fixter->createFixtures();
         $this->module=\Yii::$app->getModule('redisman');
-         $this->module->setConnection('localnat',0);
+        $this->module->setConnection('localnat',1);
     }
 
     protected function tearDown(){
+        $fixter = new RedisFixts();
+        $fixter->deleteFixtures();
         parent::tearDown();
+
     }
 
     public function testFind()
     {
          $this->assertEquals('localnat',$this->module->getCurrentConn());
-        $this->assertInstanceOf('insolita\redisman\components\NativeConnection', $this->module->getConnection());
+        $this->assertInstanceOf('insolita\redisman\components\PhpredisConnection', $this->module->getConnection());
         $res = RedisItem::find('tfx_string');
         $this->assertNotEmpty($res);
         $this->assertEquals($res->value, null);
@@ -50,36 +57,36 @@ class PhpredisTest extends \Codeception\TestCase\Test
 
         Debug::debug($res->getAttributes());
         $this->assertNotEmpty($res);
-        /*$this->assertEquals(3, $res->size);
+        $this->assertEquals(3, $res->size);
         $this->assertEquals($res->value, ['someval1', 'someval2', 'someval3']);
-        $this->assertEquals($res->formatvalue, "someval1\r\nsomeval2\r\nsomeval3");*/
+        $this->assertEquals($res->formatvalue, "someval1\r\nsomeval2\r\nsomeval3");
 
         $res = RedisItem::find('tfx_set')->findValue();
         $this->assertNotEmpty($res);
         Debug::debug($res->getValue());
         Debug::debug($res->getAttributes());
- /*        $this->assertEquals(4, $res->size);
+        $this->assertEquals(4, $res->size);
         $this->assertTrue(in_array('someval4', $res->value));
         $this->assertTrue(in_array('someval1', $res->value));
         $this->assertEquals($res->formatvalue, implode("\r\n", $res->value));
-*/
+
         $res = RedisItem::find('tfx_hash')->findValue();
         Debug::debug($res->getValue());
-      //  Debug::debug($res->getAttributes());
-        /*$this->assertNotEmpty($res);
+        Debug::debug($res->getAttributes());
+       $this->assertNotEmpty($res);
         $this->assertEquals(1, $res->size);
         $this->assertEquals(['hashfield' => 'hashval'], $res->value);
-        $this->assertAttributeInstanceOf('\yii\data\ArrayDataProvider', 'formatvalue', $res);*/
+        $this->assertAttributeInstanceOf('\yii\data\ArrayDataProvider', 'formatvalue', $res);
 
         $res = RedisItem::find('tfx_zset')->findValue();
         Debug::debug($res->getValue());
-       // Debug::debug($res->getAttributes());
+      Debug::debug($res->getAttributes());
         $this->assertNotEmpty($res);
-       /* $this->assertEquals(3, $res->size);
+      $this->assertEquals(3, $res->size);
         $this->assertEquals(['someval2' => 3, 'someval1' => 4, 'someval3' => 8], $res->value);
         $this->assertAttributeInstanceOf('\yii\data\ArrayDataProvider', 'formatvalue', $res);
 
-*/
+
         $this->setExpectedException('yii\web\NotFoundHttpException');
         $res = RedisItem::find('iugigigi giu')->findValue();
     }

@@ -22,7 +22,7 @@ class RedisFixts extends Component
     public function init()
     {
         $this->module = \Yii::$app->getModule('redisman');
-        $this->module->setConnection('local',1);
+        $this->module->setConnection('localnat',1);
     }
 
     public function createFixtures(){

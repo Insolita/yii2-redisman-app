@@ -46,7 +46,7 @@ Edit the file `config/web.php` And configure required redis-connections, for exa
                     'unixSocket'=>'/tmp/redis.sock'
                 ],
                 'remote1'=>[
-                    'class' => 'insolita\redisman\components\NativeConnection',
+                    'class' => 'insolita\redisman\components\PhpredisConnection',
                     'hostname' => '1.2.3.4',
                     'port' => 6379,
                     'database' =>1,
